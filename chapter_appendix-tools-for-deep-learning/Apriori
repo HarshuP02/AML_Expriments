@@ -80,11 +80,11 @@
         "    print(itemset, \":\", support)"
       ],
       "metadata": {
-        "id": "dKrFxgbk0dvy",
-        "outputId": "cc5d95e0-b35f-4d1e-bdd0-cd5c5d744edb",
         "colab": {
           "base_uri": "https://localhost:8080/"
-        }
+        },
+        "id": "dKrFxgbk0dvy",
+        "outputId": "cc5d95e0-b35f-4d1e-bdd0-cd5c5d744edb"
       },
       "id": "dKrFxgbk0dvy",
       "execution_count": 6,
@@ -101,6 +101,54 @@
             "('Bread', 'Butter') : 0.6\n",
             "('Milk', 'Butter') : 0.6\n",
             "('Bread', 'Milk', 'Butter') : 0.4\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "min_confidence = 0.7\n",
+        "\n",
+        "print(\"\\nAssociation Rules:\")\n",
+        "\n",
+        "for itemset in frequent_itemsets:\n",
+        "    if len(itemset) > 1:\n",
+        "        for i in range(1, len(itemset)):\n",
+        "            for antecedent in combinations(itemset, i):\n",
+        "                antecedent = set(antecedent)\n",
+        "                consequent = set(itemset) - antecedent\n",
+        "\n",
+        "                support_itemset = frequent_itemsets[itemset]\n",
+        "                support_antecedent = frequent_itemsets[tuple(antecedent)]\n",
+        "\n",
+        "                confidence = support_itemset / support_antecedent\n",
+        "\n",
+        "                if confidence >= min_confidence:\n",
+        "                    print(f\"{antecedent} -> {consequent} (Confidence: {confidence:.2f})\")"
+      ],
+      "metadata": {
+        "id": "vKfrs1lv1OlE",
+        "outputId": "2a1cb593-5db3-484d-9b6f-b09fa3d3953e",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "id": "vKfrs1lv1OlE",
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "Association Rules:\n",
+            "{'Bread'} -> {'Milk'} (Confidence: 0.75)\n",
+            "{'Milk'} -> {'Bread'} (Confidence: 0.75)\n",
+            "{'Bread'} -> {'Butter'} (Confidence: 0.75)\n",
+            "{'Butter'} -> {'Bread'} (Confidence: 0.75)\n",
+            "{'Milk'} -> {'Butter'} (Confidence: 0.75)\n",
+            "{'Butter'} -> {'Milk'} (Confidence: 0.75)\n"
           ]
         }
       ]
