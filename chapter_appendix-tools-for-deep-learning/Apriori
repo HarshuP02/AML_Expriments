@@ -1,0 +1,125 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/HarshuP02/AML_Expriments/blob/main/chapter_appendix-tools-for-deep-learning/Apriori\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "from itertools import combinations\n",
+        "\n",
+        "# Sample dataset (transactions)\n",
+        "transactions = [\n",
+        "    ['Milk', 'Bread', 'Butter'],\n",
+        "    ['Milk', 'Bread'],\n",
+        "    ['Milk', 'Butter'],\n",
+        "    ['Bread', 'Butter'],\n",
+        "    ['Milk', 'Bread', 'Butter']\n",
+        "]\n",
+        "\n",
+        "min_support = 0.4\n",
+        "\n",
+        "# -------------------------------\n",
+        "# Step 1: Get unique items\n",
+        "# -------------------------------\n",
+        "items = set()\n",
+        "for transaction in transactions:\n",
+        "    items.update(transaction)\n",
+        "\n",
+        "# -------------------------------\n",
+        "# Step 2: Calculate support\n",
+        "# -------------------------------\n",
+        "def get_support(itemset):\n",
+        "    count = 0\n",
+        "    for transaction in transactions:\n",
+        "        if set(itemset).issubset(transaction):\n",
+        "            count += 1\n",
+        "    return count / len(transactions)\n",
+        "\n",
+        "# -------------------------------\n",
+        "# Step 3: Generate frequent itemsets\n",
+        "# -------------------------------\n",
+        "frequent_itemsets = {}\n",
+        "\n",
+        "k = 1\n",
+        "current_itemsets = [{item} for item in items]\n",
+        "\n",
+        "while current_itemsets:\n",
+        "    valid_itemsets = []\n",
+        "\n",
+        "    for itemset in current_itemsets:\n",
+        "        support = get_support(itemset)\n",
+        "        if support >= min_support:\n",
+        "            frequent_itemsets[tuple(itemset)] = support\n",
+        "            valid_itemsets.append(itemset)\n",
+        "\n",
+        "    # Generate next candidates\n",
+        "    next_itemsets = []\n",
+        "    for i in range(len(valid_itemsets)):\n",
+        "        for j in range(i+1, len(valid_itemsets)):\n",
+        "            union_set = valid_itemsets[i] | valid_itemsets[j]\n",
+        "            if len(union_set) == k + 1:\n",
+        "                next_itemsets.append(union_set)\n",
+        "\n",
+        "    current_itemsets = next_itemsets\n",
+        "    k += 1\n",
+        "\n",
+        "# -------------------------------\n",
+        "# Step 4: Print results\n",
+        "# -------------------------------\n",
+        "print(\"Frequent Itemsets:\")\n",
+        "for itemset, support in frequent_itemsets.items():\n",
+        "    print(itemset, \":\", support)"
+      ],
+      "metadata": {
+        "id": "dKrFxgbk0dvy",
+        "outputId": "cc5d95e0-b35f-4d1e-bdd0-cd5c5d744edb",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "id": "dKrFxgbk0dvy",
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Frequent Itemsets:\n",
+            "('Bread',) : 0.8\n",
+            "('Milk',) : 0.8\n",
+            "('Butter',) : 0.8\n",
+            "('Bread', 'Milk') : 0.6\n",
+            "('Bread', 'Butter') : 0.6\n",
+            "('Milk', 'Butter') : 0.6\n",
+            "('Bread', 'Milk', 'Butter') : 0.4\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "required_libs": [],
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
